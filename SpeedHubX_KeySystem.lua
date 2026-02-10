@@ -1,647 +1,448 @@
---[[
-    Speed Hub X — Key System Library
-    Roblox LocalScript
-    
-    USO:
-        local KeySystem = loadstring(game:HttpGet("..."))()
-        local verified = KeySystem.new({
-            HubName     = "Speed Hub X",
-            KeyLink     = "https://linkvertise.com/...",
-            ValidKeys   = {"SHX-FREE-2025", "SHX-VIP-XXXX"},
-            DiscordLink = "https://discord.gg/...",
-            Providers = {
-                { Name = "LootLabs",    Icon = "rbxassetid://...", Link = "https://loot-link.com/..." },
-                { Name = "Linkvertise", Icon = "rbxassetid://...", Link = "https://linkvertise.com/..." },
-                { Name = "Admint.club", Icon = "rbxassetid://...", Link = "https://admint.club/..."  },
-            },
-            KeylessWeekend = true,
-            SaveKey = true,         -- salva a key no DataStore local (atributo de player)
-            Callback = function(key)
-                print("Key válida:", key)
-                -- Seu script continua aqui
-            end
-        })
---]]
+-- ╔══════════════════════════════════════════════════╗
+-- ║         Speed Hub X — Key System Library         ║
+-- ║         Configurações no topo do script          ║
+-- ╚══════════════════════════════════════════════════╝
 
-local KeySystem = {}
-KeySystem.__index = KeySystem
+-- ════════════════════════════════════════════════════
+--                  ⚙  CONFIGURAÇÕES
+-- ════════════════════════════════════════════════════
+local CONFIG = {
+    HubName         = "Speed Hub X",
+    SubTitle        = "Welcome to The,",
+
+    -- Keys válidas
+    ValidKeys = {
+        "SHX-FREE-2025",
+        "SHX-VIP-0001",
+    },
+
+    -- Ativa modo sem key nos fins de semana (sáb/dom)
+    KeylessWeekend  = true,
+
+    -- Salva a key validada localmente (não pede de novo)
+    SaveKey         = true,
+
+    -- Link do Discord (copia para clipboard ao clicar)
+    DiscordLink     = "https://discord.gg/XXXXXXX",
+
+    -- Provedores de key (nome + link)
+    Providers = {
+        { Name = "LootLabs",    Link = "https://loot-link.com/s?XXXXX"    },
+        { Name = "Linkvertise", Link = "https://linkvertise.com/XXXXX"    },
+        { Name = "Admint.club", Link = "https://admint.club/XXXXX"        },
+    },
+
+    -- Callback chamado quando a key é aceita (ou em modo keyless)
+    Callback = function(key)
+        print("[SpeedHubX] Liberado | Key:", key)
+        -- Coloque seu script principal aqui:
+        -- loadstring(game:HttpGet("https://raw.githubusercontent.com/.../main.lua"))()
+    end,
+}
+-- ════════════════════════════════════════════════════
+--              FIM DAS CONFIGURAÇÕES
+-- ════════════════════════════════════════════════════
+
+-- ─── Ícones (rbxassetid) ─────────────────────────────────────────────────────
+local Icons = {
+    ["arrow-big-right"]        = "rbxassetid://82960676755590",
+    ["arrow-big-up-dash"]      = "rbxassetid://99260194327483",
+    ["arrow-big-up"]           = "rbxassetid://93136954756149",
+    ["arrow-down-0-1"]         = "rbxassetid://120961896217875",
+    ["arrow-down-1-0"]         = "rbxassetid://93474255891850",
+    ["arrow-down-a-z"]         = "rbxassetid://99554596207900",
+    ["arrow-down-from-line"]   = "rbxassetid://132045845807798",
+    ["arrow-down-left"]        = "rbxassetid://102899325237364",
+    ["arrow-down-narrow-wide"] = "rbxassetid://129105261655061",
+    ["arrow-down-right"]       = "rbxassetid://123109928624974",
+    ["arrow-down-to-dot"]      = "rbxassetid://101675355931221",
+    ["arrow-down-to-line"]     = "rbxassetid://87050478931254",
+    ["arrow-down-up"]          = "rbxassetid://85780258549577",
+    ["arrow-down-wide-narrow"] = "rbxassetid://88461733425991",
+    ["arrow-down-z-a"]         = "rbxassetid://76115279362232",
+    ["arrow-down"]             = "rbxassetid://98764963621439",
+    ["arrow-left-from-line"]   = "rbxassetid://87857914437603",
+    ["arrow-left-right"]       = "rbxassetid://131324733048447",
+    ["arrow-left-to-line"]     = "rbxassetid://118645136026970",
+    ["arrow-left"]             = "rbxassetid://102531941843733",
+    ["arrow-right-from-line"]  = "rbxassetid://74073639809355",
+    ["arrow-right-left"]       = "rbxassetid://77015754304300",
+    ["arrow-right-to-line"]    = "rbxassetid://78632510329852",
+    ["arrow-right"]            = "rbxassetid://113692007244654",
+    ["arrow-up-0-1"]           = "rbxassetid://105257823943016",
+    ["arrow-up-1-0"]           = "rbxassetid://134175521693798",
+}
 
 -- ─── Serviços ────────────────────────────────────────────────────────────────
-local Players          = game:GetService("Players")
-local TweenService     = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local RunService       = game:GetService("RunService")
-local HttpService      = game:GetService("HttpService")
+local Players      = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui   = LocalPlayer:WaitForChild("PlayerGui")
 
--- ─── Utilitários ─────────────────────────────────────────────────────────────
-local function Tween(obj, props, duration, style, direction)
-    style     = style     or Enum.EasingStyle.Quart
-    direction = direction or Enum.EasingDirection.Out
-    local info = TweenInfo.new(duration, style, direction)
-    local t = TweenService:Create(obj, info, props)
-    t:Play()
-    return t
+-- ─── Helpers ─────────────────────────────────────────────────────────────────
+local function Tween(obj, props, t, style, dir)
+    TweenService:Create(obj,
+        TweenInfo.new(t, style or Enum.EasingStyle.Quart, dir or Enum.EasingDirection.Out),
+        props):Play()
 end
 
 local function Make(class, props, parent)
-    local obj = Instance.new(class)
-    for k, v in pairs(props) do
-        obj[k] = v
-    end
-    if parent then obj.Parent = parent end
-    return obj
+    local o = Instance.new(class)
+    for k, v in pairs(props) do o[k] = v end
+    if parent then o.Parent = parent end
+    return o
+end
+
+local function MakeIcon(name, size, parent, lo)
+    local img = Make("ImageLabel", {
+        Size                   = size or UDim2.fromOffset(13, 13),
+        BackgroundTransparency = 1,
+        Image                  = Icons[name] or "",
+        ImageColor3            = Color3.fromRGB(240, 228, 228),
+        ScaleType              = Enum.ScaleType.Fit,
+        LayoutOrder            = lo or 1,
+    }, parent)
+    return img
 end
 
 local function IsWeekend()
-    -- os.date no Roblox pode variar; usa tick() como fallback simples
-    local day = tonumber(os.date("%w")) -- 0=Dom, 6=Sáb
-    return day == 0 or day == 6
+    local d = tonumber(os.date("%w"))
+    return d == 0 or d == 6
+end
+
+local function Gap(n, lo, parent)
+    Make("Frame", { Size=UDim2.new(1,0,0,n), BackgroundTransparency=1, LayoutOrder=lo }, parent)
 end
 
 -- ─── Cores ───────────────────────────────────────────────────────────────────
 local C = {
-    Red        = Color3.fromRGB(232, 48, 42),
-    RedDark    = Color3.fromRGB(150, 22, 18),
-    RedDim     = Color3.fromRGB(40, 10, 10),
-    BG         = Color3.fromRGB(10, 9, 9),
-    Surface    = Color3.fromRGB(16, 13, 13),
-    SurfaceAlt = Color3.fromRGB(22, 17, 17),
-    Border     = Color3.fromRGB(60, 22, 20),
-    Text       = Color3.fromRGB(240, 228, 228),
-    Muted      = Color3.fromRGB(140, 120, 120),
-    White      = Color3.fromRGB(255, 255, 255),
-    Link       = Color3.fromRGB(91, 156, 246),
+    Red     = Color3.fromRGB(228, 46, 40),
+    RedDim  = Color3.fromRGB(35, 10, 10),
+    BG      = Color3.fromRGB(12, 10, 10),
+    Surface = Color3.fromRGB(17, 13, 13),
+    Alt     = Color3.fromRGB(24, 18, 18),
+    Border  = Color3.fromRGB(58, 20, 18),
+    Text    = Color3.fromRGB(240, 228, 228),
+    Muted   = Color3.fromRGB(130, 108, 108),
+    Link    = Color3.fromRGB(88, 150, 245),
+    White   = Color3.fromRGB(255, 255, 255),
 }
 
--- ─── Construtor principal ─────────────────────────────────────────────────────
-function KeySystem.new(config)
-    local self = setmetatable({}, KeySystem)
-    self.Config    = config
-    self.Verified  = false
-    self.InputText = ""
-
-    -- Checa keyless weekend
-    if config.KeylessWeekend and IsWeekend() then
-        if config.Callback then config.Callback("KEYLESS_WEEKEND") end
-        return self
-    end
-
-    -- Checa key salva
-    if config.SaveKey then
-        local saved = LocalPlayer:GetAttribute("SHX_SavedKey")
-        if saved and saved ~= "" then
-            for _, v in ipairs(config.ValidKeys or {}) do
-                if saved == v then
-                    self.Verified = true
-                    if config.Callback then config.Callback(saved) end
-                    return self
-                end
-            end
-        end
-    end
-
-    self:_BuildUI()
-    return self
+-- ─── Early exits ─────────────────────────────────────────────────────────────
+if CONFIG.KeylessWeekend and IsWeekend() then
+    task.spawn(CONFIG.Callback, "KEYLESS_WEEKEND")
+    return
 end
 
--- ─── Constrói a UI ────────────────────────────────────────────────────────────
-function KeySystem:_BuildUI()
-    local cfg = self.Config
-
-    -- ScreenGui
-    local ScreenGui = Make("ScreenGui", {
-        Name             = "SpeedHubX_KeySystem",
-        ResetOnSpawn     = false,
-        ZIndexBehavior   = Enum.ZIndexBehavior.Sibling,
-        IgnoreGuiInset   = true,
-    }, PlayerGui)
-
-    -- Overlay escuro
-    local Overlay = Make("Frame", {
-        Size            = UDim2.fromScale(1, 1),
-        BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-        BackgroundTransparency = 1,
-        ZIndex = 1,
-    }, ScreenGui)
-
-    -- Modal principal
-    local Modal = Make("Frame", {
-        Size             = UDim2.fromOffset(460, 0),  -- altura auto
-        AutomaticSize    = Enum.AutomaticSize.Y,
-        Position         = UDim2.fromScale(0.5, 0.5),
-        AnchorPoint      = Vector2.new(0.5, 0.5),
-        BackgroundColor3 = C.Surface,
-        BorderSizePixel  = 0,
-        ZIndex           = 2,
-    }, ScreenGui)
-    Make("UICorner",  { CornerRadius = UDim.new(0, 18) }, Modal)
-    Make("UIStroke",  { Color = C.Border, Thickness = 1.2 }, Modal)
-    Make("UIPadding", {
-        PaddingTop    = UDim.new(0, 30),
-        PaddingBottom = UDim.new(0, 28),
-        PaddingLeft   = UDim.new(0, 28),
-        PaddingRight  = UDim.new(0, 28),
-    }, Modal)
-    Make("UIListLayout", {
-        FillDirection       = Enum.FillDirection.Vertical,
-        HorizontalAlignment = Enum.HorizontalAlignment.Left,
-        SortOrder           = Enum.SortOrder.LayoutOrder,
-        Padding             = UDim.new(0, 0),
-    }, Modal)
-
-    -- ── Header Row (ícone + tag + fechar) ──────────────────────────────────
-    local HeaderRow = Make("Frame", {
-        Size             = UDim2.new(1, 0, 0, 36),
-        BackgroundTransparency = 1,
-        LayoutOrder      = 1,
-    }, Modal)
-    Make("UIListLayout", {
-        FillDirection       = Enum.FillDirection.Horizontal,
-        VerticalAlignment   = Enum.VerticalAlignment.Center,
-        HorizontalAlignment = Enum.HorizontalAlignment.Left,
-        SortOrder           = Enum.SortOrder.LayoutOrder,
-        Padding             = UDim.new(0, 10),
-    }, HeaderRow)
-
-    -- Ícone
-    local IconBox = Make("Frame", {
-        Size             = UDim2.fromOffset(34, 34),
-        BackgroundColor3 = C.RedDim,
-        BorderSizePixel  = 0,
-        LayoutOrder      = 1,
-    }, HeaderRow)
-    Make("UICorner",  { CornerRadius = UDim.new(0, 9) }, IconBox)
-    Make("UIStroke",  { Color = C.Border, Thickness = 1 }, IconBox)
-    Make("TextLabel", {
-        Size             = UDim2.fromScale(1, 1),
-        BackgroundTransparency = 1,
-        Text             = "🛡",
-        TextScaled       = true,
-    }, IconBox)
-    Make("UIPadding", {
-        PaddingTop = UDim.new(0,4), PaddingBottom = UDim.new(0,4),
-        PaddingLeft = UDim.new(0,4), PaddingRight = UDim.new(0,4),
-    }, IconBox)
-
-    -- Tag
-    Make("TextLabel", {
-        Size             = UDim2.fromOffset(100, 34),
-        BackgroundTransparency = 1,
-        Text             = "KEY SYSTEM",
-        TextColor3       = C.Red,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 11,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        LayoutOrder      = 2,
-    }, HeaderRow)
-
-    -- Botão fechar (canto direito absoluto)
-    local CloseBtn = Make("TextButton", {
-        Size             = UDim2.fromOffset(28, 28),
-        Position         = UDim2.new(1, -28, 0, 4),
-        AnchorPoint      = Vector2.new(0, 0),
-        BackgroundColor3 = C.RedDim,
-        Text             = "✕",
-        TextColor3       = C.Red,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 12,
-        BorderSizePixel  = 0,
-        ZIndex           = 5,
-    }, Modal)  -- filho direto do Modal para posicionamento absoluto
-    Make("UICorner", { CornerRadius = UDim.new(0, 8) }, CloseBtn)
-    Make("UIStroke", { Color = C.Border, Thickness = 1 }, CloseBtn)
-
-    CloseBtn.MouseEnter:Connect(function()
-        Tween(CloseBtn, { BackgroundColor3 = Color3.fromRGB(80, 20, 18) }, 0.15)
-    end)
-    CloseBtn.MouseLeave:Connect(function()
-        Tween(CloseBtn, { BackgroundColor3 = C.RedDim }, 0.15)
-    end)
-    CloseBtn.Activated:Connect(function()
-        self:_Hide()
-    end)
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,18), BackgroundTransparency=1, LayoutOrder=2 }, Modal)
-
-    -- ── Títulos ──────────────────────────────────────────────────────────────
-    Make("TextLabel", {
-        Size             = UDim2.new(1, 0, 0, 20),
-        BackgroundTransparency = 1,
-        Text             = "Welcome to The,",
-        TextColor3       = C.Muted,
-        Font             = Enum.Font.GothamSemibold,
-        TextSize         = 14,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        LayoutOrder      = 3,
-    }, Modal)
-
-    Make("TextLabel", {
-        Size             = UDim2.new(1, 0, 0, 44),
-        BackgroundTransparency = 1,
-        Text             = cfg.HubName or "Speed Hub X",
-        TextColor3       = C.Red,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 36,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        LayoutOrder      = 4,
-    }, Modal)
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,20), BackgroundTransparency=1, LayoutOrder=5 }, Modal)
-
-    -- ── Input Row ────────────────────────────────────────────────────────────
-    local InputRow = Make("Frame", {
-        Size             = UDim2.new(1, 0, 0, 50),
-        BackgroundTransparency = 1,
-        LayoutOrder      = 6,
-    }, Modal)
-    Make("UIListLayout", {
-        FillDirection     = Enum.FillDirection.Horizontal,
-        VerticalAlignment = Enum.VerticalAlignment.Center,
-        Padding           = UDim.new(0, 8),
-    }, InputRow)
-
-    -- Paste button
-    local PasteBtn = Make("TextButton", {
-        Size             = UDim2.fromOffset(90, 50),
-        BackgroundColor3 = C.RedDim,
-        Text             = "PASTE",
-        TextColor3       = C.Text,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 13,
-        BorderSizePixel  = 0,
-        LayoutOrder      = 1,
-    }, InputRow)
-    Make("UICorner", { CornerRadius = UDim.new(0, 12) }, PasteBtn)
-    Make("UIStroke", { Color = C.Border, Thickness = 1.2 }, PasteBtn)
-
-    PasteBtn.MouseEnter:Connect(function()
-        Tween(PasteBtn, { BackgroundColor3 = Color3.fromRGB(70, 18, 15) }, 0.15)
-    end)
-    PasteBtn.MouseLeave:Connect(function()
-        Tween(PasteBtn, { BackgroundColor3 = C.RedDim }, 0.15)
-    end)
-
-    -- Input
-    local KeyInput = Make("TextBox", {
-        Size             = UDim2.new(1, -98, 1, 0),
-        BackgroundColor3 = Color3.fromRGB(8, 6, 6),
-        PlaceholderText  = "Enter your key here...",
-        PlaceholderColor3 = C.Muted,
-        Text             = "",
-        TextColor3       = C.Text,
-        Font             = Enum.Font.Code,
-        TextSize         = 13,
-        ClearTextOnFocus = false,
-        BorderSizePixel  = 0,
-        LayoutOrder      = 2,
-    }, InputRow)
-    Make("UICorner", { CornerRadius = UDim.new(0, 12) }, KeyInput)
-    local KeyStroke = Make("UIStroke", { Color = C.Border, Thickness = 1.2 }, KeyInput)
-    Make("UIPadding", {
-        PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14)
-    }, KeyInput)
-
-    KeyInput.Focused:Connect(function()
-        Tween(KeyStroke, { Color = C.Red, Thickness = 1.5 }, 0.2)
-    end)
-    KeyInput.FocusLost:Connect(function()
-        Tween(KeyStroke, { Color = C.Border, Thickness = 1.2 }, 0.2)
-        self.InputText = KeyInput.Text
-    end)
-
-    PasteBtn.Activated:Connect(function()
-        -- No executor, getclipboard() existe; no studio usa fallback
-        local ok, clip = pcall(function() return getclipboard() end)
-        if ok and clip and clip ~= "" then
-            KeyInput.Text = clip
-            self.InputText = clip
-            self:_ShowToast("Key colada!")
-        else
-            self:_ShowToast("Use Ctrl+V no campo")
-        end
-    end)
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,10), BackgroundTransparency=1, LayoutOrder=7 }, Modal)
-
-    -- ── Submit Button ─────────────────────────────────────────────────────────
-    local SubmitBtn = Make("TextButton", {
-        Size             = UDim2.new(1, 0, 0, 50),
-        BackgroundColor3 = C.Red,
-        Text             = "Submit Key  →",
-        TextColor3       = C.White,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 15,
-        BorderSizePixel  = 0,
-        LayoutOrder      = 8,
-    }, Modal)
-    Make("UICorner", { CornerRadius = UDim.new(0, 12) }, SubmitBtn)
-
-    SubmitBtn.MouseEnter:Connect(function()
-        Tween(SubmitBtn, { BackgroundColor3 = Color3.fromRGB(255, 60, 52) }, 0.15)
-    end)
-    SubmitBtn.MouseLeave:Connect(function()
-        Tween(SubmitBtn, { BackgroundColor3 = C.Red }, 0.15)
-    end)
-    SubmitBtn.Activated:Connect(function()
-        self:_Submit(KeyInput.Text, ScreenGui)
-    end)
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,16), BackgroundTransparency=1, LayoutOrder=9 }, Modal)
-
-    -- ── Suporte ──────────────────────────────────────────────────────────────
-    local SupportRow = Make("Frame", {
-        Size             = UDim2.new(1, 0, 0, 18),
-        BackgroundTransparency = 1,
-        LayoutOrder      = 10,
-    }, Modal)
-    Make("UIListLayout", {
-        FillDirection       = Enum.FillDirection.Horizontal,
-        HorizontalAlignment = Enum.HorizontalAlignment.Center,
-        VerticalAlignment   = Enum.VerticalAlignment.Center,
-        Padding             = UDim.new(0, 4),
-    }, SupportRow)
-
-    Make("TextLabel", {
-        Size             = UDim2.fromOffset(110, 18),
-        BackgroundTransparency = 1,
-        Text             = "Need support?",
-        TextColor3       = C.Muted,
-        Font             = Enum.Font.Gotham,
-        TextSize         = 13,
-    }, SupportRow)
-
-    local DiscordBtn = Make("TextButton", {
-        Size             = UDim2.fromOffset(110, 18),
-        BackgroundTransparency = 1,
-        Text             = "Join the Discord",
-        TextColor3       = C.Link,
-        Font             = Enum.Font.GothamSemibold,
-        TextSize         = 13,
-    }, SupportRow)
-    DiscordBtn.Activated:Connect(function()
-        if cfg.DiscordLink then
-            setclipboard(cfg.DiscordLink)
-            self:_ShowToast("Link copiado!")
-        end
-    end)
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,16), BackgroundTransparency=1, LayoutOrder=11 }, Modal)
-
-    -- ── Separator ────────────────────────────────────────────────────────────
-    local SepRow = Make("Frame", {
-        Size             = UDim2.new(1, 0, 0, 14),
-        BackgroundTransparency = 1,
-        LayoutOrder      = 12,
-    }, Modal)
-    Make("UIListLayout", {
-        FillDirection     = Enum.FillDirection.Horizontal,
-        VerticalAlignment = Enum.VerticalAlignment.Center,
-        Padding           = UDim.new(0, 10),
-    }, SepRow)
-
-    local function MakeLine(lo)
-        local l = Make("Frame", {
-            Size             = UDim2.new(0.4, 0, 0, 1),
-            BackgroundColor3 = C.Border,
-            BorderSizePixel  = 0,
-            LayoutOrder      = lo,
-        }, SepRow)
-        Make("UICorner", { CornerRadius = UDim.new(1,0) }, l)
-    end
-    MakeLine(1)
-    Make("TextLabel", {
-        Size             = UDim2.fromOffset(70, 14),
-        BackgroundTransparency = 1,
-        Text             = "GET KEY VIA",
-        TextColor3       = C.Muted,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 9,
-        LayoutOrder      = 2,
-    }, SepRow)
-    MakeLine(3)
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,10), BackgroundTransparency=1, LayoutOrder=13 }, Modal)
-
-    -- ── Providers ────────────────────────────────────────────────────────────
-    local ProvidersRow = Make("Frame", {
-        Size             = UDim2.new(1, 0, 0, 42),
-        BackgroundTransparency = 1,
-        LayoutOrder      = 14,
-    }, Modal)
-    Make("UIListLayout", {
-        FillDirection = Enum.FillDirection.Horizontal,
-        Padding       = UDim.new(0, 8),
-        VerticalAlignment = Enum.VerticalAlignment.Center,
-    }, ProvidersRow)
-
-    local providers = cfg.Providers or {
-        { Name = "LootLabs",     Icon = "🎁", Link = "" },
-        { Name = "Linkvertise",  Icon = "🔗", Link = "" },
-        { Name = "Admint.club",  Icon = "🌿", Link = "" },
-    }
-
-    for i, p in ipairs(providers) do
-        local pBtn = Make("TextButton", {
-            Size             = UDim2.new(1/3, i < #providers and -6 or 0, 1, 0),
-            BackgroundColor3 = C.SurfaceAlt,
-            Text             = (p.Icon or "") .. "  " .. p.Name,
-            TextColor3       = C.Text,
-            Font             = Enum.Font.GothamSemibold,
-            TextSize         = 12,
-            BorderSizePixel  = 0,
-            LayoutOrder      = i,
-        }, ProvidersRow)
-        Make("UICorner", { CornerRadius = UDim.new(0, 10) }, pBtn)
-        Make("UIStroke", { Color = Color3.fromRGB(45, 35, 35), Thickness = 1 }, pBtn)
-
-        pBtn.MouseEnter:Connect(function()
-            Tween(pBtn, { BackgroundColor3 = Color3.fromRGB(35, 26, 26) }, 0.15)
-        end)
-        pBtn.MouseLeave:Connect(function()
-            Tween(pBtn, { BackgroundColor3 = C.SurfaceAlt }, 0.15)
-        end)
-        pBtn.Activated:Connect(function()
-            if p.Link and p.Link ~= "" then
-                setclipboard(p.Link)
-                self:_ShowToast(p.Name .. " — link copiado!")
+if CONFIG.SaveKey then
+    local saved = LocalPlayer:GetAttribute("SHX_Key")
+    if saved and saved ~= "" then
+        for _, v in ipairs(CONFIG.ValidKeys) do
+            if saved == v then
+                task.spawn(CONFIG.Callback, saved)
+                return
             end
-        end)
+        end
     end
-
-    -- ── Espaço ──────────────────────────────────────────────────────────────
-    Make("Frame", { Size = UDim2.new(1,0,0,12), BackgroundTransparency=1, LayoutOrder=15 }, Modal)
-
-    -- ── Keyless Notice ───────────────────────────────────────────────────────
-    if cfg.KeylessWeekend then
-        local Notice = Make("Frame", {
-            Size             = UDim2.new(1, 0, 0, 38),
-            BackgroundColor3 = Color3.fromRGB(24, 10, 10),
-            BorderSizePixel  = 0,
-            LayoutOrder      = 16,
-        }, Modal)
-        Make("UICorner", { CornerRadius = UDim.new(0, 10) }, Notice)
-        Make("UIStroke", { Color = Color3.fromRGB(70, 20, 18), Thickness = 1 }, Notice)
-        Make("UIPadding", {
-            PaddingLeft = UDim.new(0,14), PaddingRight = UDim.new(0,14)
-        }, Notice)
-        Make("UIListLayout", {
-            FillDirection     = Enum.FillDirection.Horizontal,
-            VerticalAlignment = Enum.VerticalAlignment.Center,
-            Padding           = UDim.new(0, 10),
-        }, Notice)
-
-        -- Dot piscando
-        local Dot = Make("Frame", {
-            Size             = UDim2.fromOffset(7, 7),
-            BackgroundColor3 = C.Red,
-            BorderSizePixel  = 0,
-            LayoutOrder      = 1,
-        }, Notice)
-        Make("UICorner", { CornerRadius = UDim.new(1, 0) }, Dot)
-
-        Make("TextLabel", {
-            Size             = UDim2.new(1, -20, 1, 0),
-            BackgroundTransparency = 1,
-            RichText         = true,
-            Text             = '<b>Keyless</b> will be enabled every weekend.',
-            TextColor3       = C.Muted,
-            Font             = Enum.Font.Gotham,
-            TextSize         = 12,
-            TextXAlignment   = Enum.TextXAlignment.Left,
-            LayoutOrder      = 2,
-        }, Notice)
-
-        -- Animação do dot
-        task.spawn(function()
-            while Notice.Parent do
-                Tween(Dot, { BackgroundTransparency = 0.1 }, 1)
-                task.wait(1)
-                Tween(Dot, { BackgroundTransparency = 0.85 }, 1)
-                task.wait(1)
-            end
-        end)
-    end
-
-    -- ── Toast Label (fora do modal) ──────────────────────────────────────────
-    self._Toast = Make("TextLabel", {
-        Size             = UDim2.fromOffset(220, 36),
-        Position         = UDim2.new(0.5, 0, 1, -20),
-        AnchorPoint      = Vector2.new(0.5, 1),
-        BackgroundColor3 = Color3.fromRGB(20, 15, 15),
-        Text             = "",
-        TextColor3       = C.Red,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 11,
-        BorderSizePixel  = 0,
-        BackgroundTransparency = 1,
-        ZIndex           = 10,
-    }, ScreenGui)
-    Make("UICorner", { CornerRadius = UDim.new(0, 10) }, self._Toast)
-    Make("UIStroke", { Color = C.Border, Thickness = 1 }, self._Toast)
-
-    -- ── Animação de entrada ───────────────────────────────────────────────────
-    Modal.Position = UDim2.new(0.5, 0, 0.6, 0)
-    Modal.BackgroundTransparency = 1
-    Tween(Overlay, { BackgroundTransparency = 0.45 }, 0.35)
-    Tween(Modal, { Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0 }, 0.45,
-        Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-
-    self._ScreenGui = ScreenGui
-    self._Modal     = Modal
 end
 
--- ─── Submit / Verificação de key ─────────────────────────────────────────────
-function KeySystem:_Submit(key, gui)
-    key = key:match("^%s*(.-)%s*$") -- trim
-    if key == "" then
-        self:_ShowToast("❌  Digite ou cole sua key")
-        return
-    end
+-- ─── Build UI ────────────────────────────────────────────────────────────────
+local toastThread
+local GUI = {}
 
-    local cfg = self.Config
-    local valid = false
+local Screen = Make("ScreenGui", {
+    Name           = "SHX_KeySystem",
+    ResetOnSpawn   = false,
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    IgnoreGuiInset = true,
+}, PlayerGui)
 
-    for _, v in ipairs(cfg.ValidKeys or {}) do
-        if key == v then valid = true break end
-    end
+local Overlay = Make("Frame", {
+    Size                   = UDim2.fromScale(1, 1),
+    BackgroundColor3       = Color3.fromRGB(0,0,0),
+    BackgroundTransparency = 1,
+    ZIndex                 = 1,
+}, Screen)
 
-    if valid then
-        if cfg.SaveKey then
-            LocalPlayer:SetAttribute("SHX_SavedKey", key)
-        end
-        self:_ShowToast("✔  Key verificada!")
-        task.wait(0.8)
-        self:_Hide()
-        if cfg.Callback then
-            task.spawn(cfg.Callback, key)
-        end
+-- Modal: 340px de largura, altura automática
+local Modal = Make("Frame", {
+    Size             = UDim2.fromOffset(340, 0),
+    AutomaticSize    = Enum.AutomaticSize.Y,
+    Position         = UDim2.new(0.5, 0, 0.58, 0),
+    AnchorPoint      = Vector2.new(0.5, 0.5),
+    BackgroundColor3 = C.Surface,
+    BorderSizePixel  = 0,
+    ZIndex           = 2,
+}, Screen)
+Make("UICorner",  { CornerRadius = UDim.new(0, 16) }, Modal)
+Make("UIStroke",  { Color = C.Border, Thickness = 1.2 }, Modal)
+Make("UIPadding", {
+    PaddingTop    = UDim.new(0, 20),
+    PaddingBottom = UDim.new(0, 18),
+    PaddingLeft   = UDim.new(0, 20),
+    PaddingRight  = UDim.new(0, 20),
+}, Modal)
+Make("UIListLayout", {
+    FillDirection       = Enum.FillDirection.Vertical,
+    HorizontalAlignment = Enum.HorizontalAlignment.Left,
+    SortOrder           = Enum.SortOrder.LayoutOrder,
+    Padding             = UDim.new(0, 0),
+}, Modal)
+
+-- ── Fechar (absoluto, canto superior direito) ────────────────────────────────
+local CloseBtn = Make("TextButton", {
+    Size             = UDim2.fromOffset(22, 22),
+    Position         = UDim2.new(1, -20, 0, 8),
+    AnchorPoint      = Vector2.new(0, 0),
+    BackgroundColor3 = C.RedDim,
+    Text             = "",
+    BorderSizePixel  = 0,
+    ZIndex           = 6,
+}, Modal)
+Make("UICorner", { CornerRadius = UDim.new(0, 6) }, CloseBtn)
+Make("UIStroke", { Color = C.Border, Thickness = 1 }, CloseBtn)
+local ci = MakeIcon("arrow-right-left", UDim2.fromOffset(11, 11), CloseBtn)
+ci.Position = UDim2.fromScale(0.5,0.5); ci.AnchorPoint = Vector2.new(0.5,0.5); ci.ImageColor3 = C.Red
+
+CloseBtn.MouseEnter:Connect(function() Tween(CloseBtn, { BackgroundColor3 = Color3.fromRGB(65,14,12) }, 0.12) end)
+CloseBtn.MouseLeave:Connect(function() Tween(CloseBtn, { BackgroundColor3 = C.RedDim }, 0.12) end)
+CloseBtn.Activated:Connect(function()
+    Tween(Modal, { Position = UDim2.new(0.5,0,0.62,0), BackgroundTransparency=1 }, 0.25)
+    Tween(Overlay, { BackgroundTransparency=1 }, 0.25)
+    task.delay(0.28, function() Screen:Destroy() end)
+end)
+
+-- ── Header ───────────────────────────────────────────────────────────────────
+local HRow = Make("Frame", { Size=UDim2.new(1,0,0,28), BackgroundTransparency=1, LayoutOrder=1 }, Modal)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,7) }, HRow)
+
+local IBox = Make("Frame", { Size=UDim2.fromOffset(24,24), BackgroundColor3=C.RedDim, BorderSizePixel=0, LayoutOrder=1 }, HRow)
+Make("UICorner", { CornerRadius=UDim.new(0,7) }, IBox)
+Make("UIStroke", { Color=C.Border, Thickness=1 }, IBox)
+local hi = MakeIcon("arrow-big-right", UDim2.fromOffset(13,13), IBox)
+hi.Position=UDim2.fromScale(0.5,0.5); hi.AnchorPoint=Vector2.new(0.5,0.5); hi.ImageColor3=C.Red
+
+Make("TextLabel", {
+    Size=UDim2.fromOffset(110,24), BackgroundTransparency=1,
+    Text="KEY SYSTEM", TextColor3=C.Red,
+    Font=Enum.Font.GothamBold, TextSize=10,
+    TextXAlignment=Enum.TextXAlignment.Left, LayoutOrder=2,
+}, HRow)
+
+Gap(10, 2, Modal)
+
+-- ── Títulos ───────────────────────────────────────────────────────────────────
+Make("TextLabel", {
+    Size=UDim2.new(1,0,0,14), BackgroundTransparency=1,
+    Text=CONFIG.SubTitle, TextColor3=C.Muted,
+    Font=Enum.Font.GothamSemibold, TextSize=11,
+    TextXAlignment=Enum.TextXAlignment.Left, LayoutOrder=3,
+}, Modal)
+
+Make("TextLabel", {
+    Size=UDim2.new(1,0,0,32), BackgroundTransparency=1,
+    Text=CONFIG.HubName, TextColor3=C.Red,
+    Font=Enum.Font.GothamBold, TextSize=26,
+    TextXAlignment=Enum.TextXAlignment.Left, LayoutOrder=4,
+}, Modal)
+
+Gap(14, 5, Modal)
+
+-- ── Input row ─────────────────────────────────────────────────────────────────
+local IRow = Make("Frame", { Size=UDim2.new(1,0,0,38), BackgroundTransparency=1, LayoutOrder=6 }, Modal)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,6) }, IRow)
+
+local PasteBtn = Make("TextButton", { Size=UDim2.fromOffset(68,38), BackgroundColor3=C.RedDim, Text="", BorderSizePixel=0, LayoutOrder=1 }, IRow)
+Make("UICorner", { CornerRadius=UDim.new(0,10) }, PasteBtn)
+Make("UIStroke", { Color=C.Border, Thickness=1.2 }, PasteBtn)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, HorizontalAlignment=Enum.HorizontalAlignment.Center, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,5) }, PasteBtn)
+MakeIcon("arrow-down-to-line", UDim2.fromOffset(12,12), PasteBtn, 1).ImageColor3 = C.Text
+Make("TextLabel", { Size=UDim2.fromOffset(36,38), BackgroundTransparency=1, Text="PASTE", TextColor3=C.Text, Font=Enum.Font.GothamBold, TextSize=10, LayoutOrder=2 }, PasteBtn)
+
+local KeyInput = Make("TextBox", {
+    Size=UDim2.new(1,-74,1,0), BackgroundColor3=Color3.fromRGB(8,5,5),
+    PlaceholderText="Enter your key here...", PlaceholderColor3=C.Muted,
+    Text="", TextColor3=C.Text, Font=Enum.Font.Code, TextSize=11,
+    ClearTextOnFocus=false, BorderSizePixel=0, LayoutOrder=2, ClipsDescendants=true,
+}, IRow)
+Make("UICorner", { CornerRadius=UDim.new(0,10) }, KeyInput)
+local KStroke = Make("UIStroke", { Color=C.Border, Thickness=1.2 }, KeyInput)
+Make("UIPadding", { PaddingLeft=UDim.new(0,10), PaddingRight=UDim.new(0,10) }, KeyInput)
+
+KeyInput.Focused:Connect(function()   Tween(KStroke, { Color=C.Red, Thickness=1.5 }, 0.15) end)
+KeyInput.FocusLost:Connect(function() Tween(KStroke, { Color=C.Border, Thickness=1.2 }, 0.15) end)
+
+PasteBtn.MouseEnter:Connect(function() Tween(PasteBtn, { BackgroundColor3=Color3.fromRGB(55,12,10) }, 0.12) end)
+PasteBtn.MouseLeave:Connect(function() Tween(PasteBtn, { BackgroundColor3=C.RedDim }, 0.12) end)
+PasteBtn.Activated:Connect(function()
+    local ok, clip = pcall(function() return getclipboard() end)
+    if ok and clip and clip ~= "" then
+        KeyInput.Text = clip
+        GUI.Toast("Key colada!")
     else
-        self:_ShowToast("✘  Key inválida")
-        -- Shake animation no modal
-        local orig = self._Modal.Position
-        for i = 1, 4 do
-            Tween(self._Modal, { Position = UDim2.new(0.5, i%2==0 and 8 or -8, 0.5, 0) }, 0.05)
-            task.wait(0.05)
-        end
-        Tween(self._Modal, { Position = orig }, 0.1)
+        GUI.Toast("Use Ctrl+V no campo")
     end
+end)
+
+Gap(8, 7, Modal)
+
+-- ── Submit ────────────────────────────────────────────────────────────────────
+local SubBtn = Make("TextButton", { Size=UDim2.new(1,0,0,38), BackgroundColor3=C.Red, Text="", BorderSizePixel=0, LayoutOrder=8 }, Modal)
+Make("UICorner", { CornerRadius=UDim.new(0,10) }, SubBtn)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, HorizontalAlignment=Enum.HorizontalAlignment.Center, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,8) }, SubBtn)
+Make("TextLabel", { Size=UDim2.fromOffset(72,38), BackgroundTransparency=1, Text="Submit Key", TextColor3=C.White, Font=Enum.Font.GothamBold, TextSize=13, LayoutOrder=1 }, SubBtn)
+MakeIcon("arrow-right", UDim2.fromOffset(13,13), SubBtn, 2).ImageColor3 = C.White
+
+SubBtn.MouseEnter:Connect(function() Tween(SubBtn, { BackgroundColor3=Color3.fromRGB(255,55,48) }, 0.12) end)
+SubBtn.MouseLeave:Connect(function() Tween(SubBtn, { BackgroundColor3=C.Red }, 0.12) end)
+
+Gap(13, 9, Modal)
+
+-- ── Discord ───────────────────────────────────────────────────────────────────
+local DRow = Make("Frame", { Size=UDim2.new(1,0,0,14), BackgroundTransparency=1, LayoutOrder=10 }, Modal)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, HorizontalAlignment=Enum.HorizontalAlignment.Center, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,4) }, DRow)
+Make("TextLabel", { Size=UDim2.fromOffset(88,14), BackgroundTransparency=1, Text="Need support?", TextColor3=C.Muted, Font=Enum.Font.Gotham, TextSize=11, LayoutOrder=1 }, DRow)
+local DiscBtn = Make("TextButton", { Size=UDim2.fromOffset(98,14), BackgroundTransparency=1, Text="Join the Discord", TextColor3=C.Link, Font=Enum.Font.GothamSemibold, TextSize=11, LayoutOrder=2 }, DRow)
+DiscBtn.Activated:Connect(function()
+    pcall(function() setclipboard(CONFIG.DiscordLink) end)
+    GUI.Toast("Discord link copiado!")
+end)
+
+Gap(13, 11, Modal)
+
+-- ── Separador ─────────────────────────────────────────────────────────────────
+local SepRow = Make("Frame", { Size=UDim2.new(1,0,0,10), BackgroundTransparency=1, LayoutOrder=12 }, Modal)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,8) }, SepRow)
+local function SL(lo)
+    local l = Make("Frame", { Size=UDim2.new(0.36,0,0,1), BackgroundColor3=C.Border, BorderSizePixel=0, LayoutOrder=lo }, SepRow)
+    Make("UICorner", { CornerRadius=UDim.new(1,0) }, l)
+end
+SL(1)
+Make("TextLabel", { Size=UDim2.fromOffset(66,10), BackgroundTransparency=1, Text="GET KEY VIA", TextColor3=C.Muted, Font=Enum.Font.GothamBold, TextSize=8, LayoutOrder=2 }, SepRow)
+SL(3)
+
+Gap(8, 13, Modal)
+
+-- ── Providers ─────────────────────────────────────────────────────────────────
+local PRow = Make("Frame", { Size=UDim2.new(1,0,0,34), BackgroundTransparency=1, LayoutOrder=14 }, Modal)
+Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,5) }, PRow)
+
+local pIcons = { "arrow-right-from-line", "arrow-right", "arrow-right-to-line" }
+
+for i, p in ipairs(CONFIG.Providers) do
+    local w = (1/#CONFIG.Providers)
+    local pb = Make("TextButton", {
+        Size=UDim2.new(w, i < #CONFIG.Providers and -4 or 0, 1, 0),
+        BackgroundColor3=C.Alt, Text="", BorderSizePixel=0, LayoutOrder=i,
+    }, PRow)
+    Make("UICorner", { CornerRadius=UDim.new(0,8) }, pb)
+    Make("UIStroke",  { Color=Color3.fromRGB(40,26,26), Thickness=1 }, pb)
+    Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, HorizontalAlignment=Enum.HorizontalAlignment.Center, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,5) }, pb)
+
+    local pi = MakeIcon(pIcons[i] or "arrow-right", UDim2.fromOffset(11,11), pb, 1)
+    pi.ImageColor3 = C.Red
+
+    Make("TextLabel", { Size=UDim2.fromOffset(72,34), BackgroundTransparency=1, Text=p.Name, TextColor3=C.Text, Font=Enum.Font.GothamSemibold, TextSize=11, LayoutOrder=2 }, pb)
+
+    pb.MouseEnter:Connect(function() Tween(pb, { BackgroundColor3=Color3.fromRGB(30,20,20) }, 0.12) end)
+    pb.MouseLeave:Connect(function() Tween(pb, { BackgroundColor3=C.Alt }, 0.12) end)
+    pb.Activated:Connect(function()
+        pcall(function() setclipboard(p.Link) end)
+        GUI.Toast(p.Name .. " — link copiado!")
+    end)
+end
+
+Gap(9, 15, Modal)
+
+-- ── Keyless notice ────────────────────────────────────────────────────────────
+if CONFIG.KeylessWeekend then
+    local N = Make("Frame", {
+        Size=UDim2.new(1,0,0,30), BackgroundColor3=Color3.fromRGB(20,9,9),
+        BorderSizePixel=0, LayoutOrder=16,
+    }, Modal)
+    Make("UICorner", { CornerRadius=UDim.new(0,8) }, N)
+    Make("UIStroke", { Color=Color3.fromRGB(55,16,14), Thickness=1 }, N)
+    Make("UIPadding", { PaddingLeft=UDim.new(0,11), PaddingRight=UDim.new(0,11) }, N)
+    Make("UIListLayout", { FillDirection=Enum.FillDirection.Horizontal, VerticalAlignment=Enum.VerticalAlignment.Center, Padding=UDim.new(0,8) }, N)
+
+    local Dot = Make("Frame", { Size=UDim2.fromOffset(5,5), BackgroundColor3=C.Red, BorderSizePixel=0, LayoutOrder=1 }, N)
+    Make("UICorner", { CornerRadius=UDim.new(1,0) }, Dot)
+
+    Make("TextLabel", {
+        Size=UDim2.new(1,-16,1,0), BackgroundTransparency=1, RichText=true,
+        Text="<b>Keyless</b> will be enabled every weekend.",
+        TextColor3=C.Muted, Font=Enum.Font.Gotham, TextSize=11,
+        TextXAlignment=Enum.TextXAlignment.Left, LayoutOrder=2,
+    }, N)
+
+    task.spawn(function()
+        while N.Parent do
+            Tween(Dot, { BackgroundTransparency=0.85 }, 0.85)
+            task.wait(0.85)
+            Tween(Dot, { BackgroundTransparency=0 }, 0.85)
+            task.wait(0.85)
+        end
+    end)
 end
 
 -- ─── Toast ───────────────────────────────────────────────────────────────────
-function KeySystem:_ShowToast(msg)
-    if not self._Toast then return end
-    self._Toast.Text = msg
-    self._Toast.BackgroundTransparency = 0.1
-    Tween(self._Toast, { Position = UDim2.new(0.5, 0, 1, -30) }, 0.3)
-    task.delay(2.2, function()
-        Tween(self._Toast, { BackgroundTransparency = 1, Position = UDim2.new(0.5, 0, 1, -10) }, 0.3)
+local Toast = Make("TextLabel", {
+    Size=UDim2.fromOffset(194, 30),
+    Position=UDim2.new(0.5,0,1,6),
+    AnchorPoint=Vector2.new(0.5,0),
+    BackgroundColor3=Color3.fromRGB(16,10,10),
+    BackgroundTransparency=1,
+    Text="", TextColor3=C.Red,
+    Font=Enum.Font.GothamBold, TextSize=11,
+    BorderSizePixel=0, ZIndex=8,
+}, Modal)
+Make("UICorner", { CornerRadius=UDim.new(0,8) }, Toast)
+Make("UIStroke", { Color=C.Border, Thickness=1 }, Toast)
+
+function GUI.Toast(msg)
+    if toastThread then task.cancel(toastThread) end
+    Toast.Text = msg
+    Tween(Toast, { BackgroundTransparency=0.06, Position=UDim2.new(0.5,0,1,10) }, 0.22)
+    toastThread = task.delay(2, function()
+        Tween(Toast, { BackgroundTransparency=1, Position=UDim2.new(0.5,0,1,4) }, 0.22)
     end)
 end
 
--- ─── Fechar ───────────────────────────────────────────────────────────────────
-function KeySystem:_Hide()
-    if not self._Modal then return end
-    Tween(self._Modal, { Position = UDim2.new(0.5, 0, 0.6, 0), BackgroundTransparency = 1 }, 0.3)
-    task.delay(0.35, function()
-        if self._ScreenGui then
-            self._ScreenGui:Destroy()
-        end
-    end)
-end
+-- ─── Submit logic ────────────────────────────────────────────────────────────
+SubBtn.Activated:Connect(function()
+    local key = KeyInput.Text:match("^%s*(.-)%s*$")
+    if key == "" then GUI.Toast("✘  Digite ou cole sua key"); return end
 
-return KeySystem
-
---[[
-════════════════════════════════════════════
-  EXEMPLO DE USO RÁPIDO (LocalScript):
-════════════════════════════════════════════
-
-local KeySystem = require(script.KeySystem)  -- ou loadstring
-
-KeySystem.new({
-    HubName        = "Speed Hub X",
-    ValidKeys      = { "SHX-FREE-2025", "SHX-PREMIUM-9999" },
-    DiscordLink    = "https://discord.gg/XXXXXXX",
-    KeylessWeekend = true,
-    SaveKey        = true,
-    Providers = {
-        { Name = "LootLabs",    Icon = "🎁", Link = "https://loot-link.com/s?XXXXX" },
-        { Name = "Linkvertise", Icon = "🔗", Link = "https://linkvertise.com/XXXXX" },
-        { Name = "Admint.club", Icon = "🌿", Link = "https://admint.club/XXXXX"     },
-    },
-    Callback = function(key)
-        print("[SpeedHubX] Acesso liberado com key:", key)
-        -- carregue o resto do seu script aqui
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/.../main.lua"))()
+    local ok = false
+    for _, v in ipairs(CONFIG.ValidKeys) do
+        if key == v then ok = true; break end
     end
-})
---]]
+
+    if ok then
+        if CONFIG.SaveKey then LocalPlayer:SetAttribute("SHX_Key", key) end
+        GUI.Toast("✔  Key verificada!")
+        task.delay(0.7, function()
+            Tween(Modal,   { Position=UDim2.new(0.5,0,0.62,0), BackgroundTransparency=1 }, 0.25)
+            Tween(Overlay, { BackgroundTransparency=1 }, 0.25)
+            task.delay(0.28, function()
+                Screen:Destroy()
+                task.spawn(CONFIG.Callback, key)
+            end)
+        end)
+    else
+        GUI.Toast("✘  Key inválida")
+        -- Shake
+        local orig = Modal.Position
+        for i = 1, 5 do
+            Tween(Modal, { Position=UDim2.new(0.5, i%2==0 and 7 or -7, 0.5, 0) }, 0.04)
+            task.wait(0.04)
+        end
+        Tween(Modal, { Position=orig }, 0.07)
+    end
+end)
+
+-- ─── Animação de entrada ──────────────────────────────────────────────────────
+Tween(Overlay, { BackgroundTransparency=0.5 }, 0.3)
+Tween(Modal,   { Position=UDim2.new(0.5,0,0.5,0), BackgroundTransparency=0 }, 0.4,
+    Enum.EasingStyle.Back, Enum.EasingDirection.Out)
