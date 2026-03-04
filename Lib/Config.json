@@ -1,9 +1,9 @@
 {
     "_comment": "Configuração Global",
 --// ============================================
-    "OpenIcon": "rbxassetid://98419825001487",
+    "OpenIcon": "rbxassetid://85339441664266",
 --// ============================================
-    "ThemeSelect": "teal",
+    "ThemeSelect": "lilac",
 --// ============================================
     "SoundId": "rbxassetid://125061692545569",
     "SoundVolume": 1,
