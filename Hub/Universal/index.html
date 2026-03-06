@@ -1,0 +1,3449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethus - Roblox Script Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="description" content="Encontre scripts de vários jogos Roblox reunidos em um hub rápido e fácil de usar.">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #666666;
+            --accent: #4a9eff;
+            --accent-hover: #5fadff;
+            --shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Banner */
+        .header-banner {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .banner-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            max-height: 250px;
+        }
+
+        header {
+            padding: 2rem 0 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+
+        .header-text {
+            flex: 1;
+        }
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0; /* remove TODOS os espaços */
+    color: #ffffff;
+    line-height: 1.1;
+}
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Tutorial Section */
+        .tutorial-section {
+            margin: 0.4rem 0;
+        }
+
+        .tutorial-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tutorial-card:hover {
+            background: var(--bg-secondary);
+            border-color: #4a9eff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
+        }
+
+        .tutorial-icon {
+            background: linear-gradient(135deg, #4a9eff 0%, #3182ce 100%);
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tutorial-icon svg {
+            color: #ffffff;
+        }
+
+        .tutorial-content {
+            flex: 1;
+        }
+
+        .tutorial-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .tutorial-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .tutorial-arrow {
+            color: var(--text-tertiary);
+            transition: all 0.3s ease;
+        }
+
+        .tutorial-card:hover .tutorial-arrow {
+            color: #4a9eff;
+            transform: translateX(4px);
+        }
+
+        /* Video Tutorial Card - Red Theme */
+        .tutorial-card.video-tutorial:hover {
+            border-color: #ff0000;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+        }
+
+        .tutorial-card.video-tutorial .tutorial-icon {
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+        }
+
+        .tutorial-card.video-tutorial:hover .tutorial-arrow {
+            color: #ff0000;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-modal.hidden {
+            display: none;
+        }
+
+        .video-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(4px);
+        }
+
+        .video-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            z-index: 10000;
+        }
+
+        .video-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .video-modal-close:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 177.78%; /* 9:16 aspect ratio for shorts */
+            height: 0;
+            overflow: hidden;
+            background: #000;
+            border-radius: 12px;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+
+        header {
+            padding: 3rem 0 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+        }
+
+        .search-section {
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 500px;
+        }
+
+        .search-container {
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            animation: searchSlide 0.7s ease-out;
+        }
+
+        @keyframes searchSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+            transition: all 0.2s ease;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--accent);
+            background: var(--bg-card);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-box::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .games-container {
+            padding: 1.5rem 0 3rem;
+        }
+
+        .game-category {
+            margin-bottom: 2.5rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .script-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cardFadeIn 0.5s ease-out backwards;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .script-card:nth-child(1) { animation-delay: 0.05s; }
+        .script-card:nth-child(2) { animation-delay: 0.1s; }
+        .script-card:nth-child(3) { animation-delay: 0.15s; }
+        .script-card:nth-child(4) { animation-delay: 0.2s; }
+        .script-card:nth-child(5) { animation-delay: 0.25s; }
+        .script-card:nth-child(6) { animation-delay: 0.3s; }
+        .script-card:nth-child(7) { animation-delay: 0.35s; }
+        .script-card:nth-child(8) { animation-delay: 0.4s; }
+        .script-card:nth-child(9) { animation-delay: 0.45s; }
+        .script-card:nth-child(10) { animation-delay: 0.5s; }
+
+        .script-card:hover {
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.15);
+        }
+
+        .script-name {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .script-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: var(--accent);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .script-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .script-link:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .script-link:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+        }
+
+        .script-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-tertiary);
+        }
+
+        .no-results svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header-banner {
+                margin-bottom: 1.5rem;
+            }
+
+            .banner-image {
+                max-height: 150px;
+            }
+
+            header {
+                padding: 2rem 0 1.5rem;
+            }
+
+            .logo-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .tutorial-card {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .tutorial-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .tutorial-title {
+                font-size: 0.95rem;
+            }
+
+            .tutorial-description {
+                font-size: 0.8rem;
+            }
+
+            .video-modal-content {
+                width: 95%;
+            }
+
+            .video-modal-close {
+                top: -45px;
+                width: 32px;
+                height: 32px;
+            }
+
+            .video-wrapper {
+                padding-bottom: 177.78%;
+            }
+
+            .scripts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-section {
+                padding: 1.5rem 0;
+            }
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            animation: skeleton-loading 1s linear infinite alternate;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-color: var(--bg-card);
+            }
+            100% {
+                background-color: var(--bg-secondary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="padding-top: 2rem;">
+        <!-- Banner -->
+        <div class="header-banner">
+            <img src="https://yt3.googleusercontent.com/OrrAA3mn45ESKrHgn7nZeWt9Lg6_kJ-pxP1FkTWW1k_T3VeHlcuTjCBS60Ct6gy-AZkdbS68kA=w1060-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="Ethus Banner" class="banner-image">
+        </div>
+
+        <header>
+            <div class="header-content">
+                <img src="https://yt3.googleusercontent.com/xYhMqiKfC6gq7KwmwB4JtuYNSw_6ZeM2ibsdeFqr5HxnOuK7wY1d_YAcZhsddbxhfq_d6zVUfw=s160-c-k-c0x00ffffff-no-rj" alt="Ethus Logo" class="logo-image">
+                <div class="header-text">
+                    <h1 class="logo">Ethus Scripts</h1>
+                    <p class="subtitle">Scripts & Executores Mobile</p>
+                </div>
+            </div>
+            <p class="description">⬇️O único canal brasileiro que reune os melhores scripts do momento SEM KEY & ATUALIZADOS!!✅</p>
+        </header>
+
+        <!-- Tutorial Card -->
+        <div class="tutorial-section">
+            <a href="https://youtu.be/m5yowENKbpY?si=N4qyaao0AZiVJfc4" target="_blank" class="tutorial-card video-tutorial">
+                <div class="tutorial-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
+                        <path d="m10 15 5-3-5-3z"/>
+                    </svg>
+                </div>
+                <div class="tutorial-content">
+                    <div class="tutorial-title">📚 Como passar no encurtador</div>
+                    <div class="tutorial-description">Assista ao tutorial completo</div>
+                </div>
+                <div class="tutorial-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </div>
+            </a>
+            
+            <a href="https://ethus-scripts.vercel.app/Executores" target="_blank" class="tutorial-card" style="margin-top: 1rem;">
+                <div class="tutorial-icon" style="background: none; padding: 0;">
+                    <img src="https://raw.githubusercontent.com/NexorHub/Projects/refs/heads/main/Thumbnails/1770372384267.jpg" alt="Executores Mobile" style="width: 48px; height: 48px; border-radius: 10px; object-fit: cover;">
+                </div>
+                <div class="tutorial-content">
+                    <div class="tutorial-title">Executores Mobile</div>
+                    <div class="tutorial-description">Baixar executores sempre Atualizados </div>
+                </div>
+                <div class="tutorial-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </div>
+            </a>
+        </div>
+
+        <div class="search-section">
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                    <input 
+                        type="text" 
+                        class="search-box" 
+                        id="searchInput" 
+                        placeholder="Pesquise por nome de jogo ou script ..."
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div class="games-container" id="gamesContainer">
+            <!-- Nova Categoria -->
+            <!-- Nova Categoria -->
+<div class="game-category" data-game="Sorcerer Ascent">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-b81a60f80e9ec438897fb647bbe69fdf/150/150/Image/Webp/noFilter"
+             alt="Sorcerer Ascent"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Sorcerer Ascent</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="DZ Hub">
+    <div class="script-name">DZ Hub</div>
+    <a href="https://mineurl.com/c154f4" class="script-link" data-script="DZ Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Venuz Hub">
+    <div class="script-name">Venuz Hub</div>
+    <a href="https://mineurl.com/ccb9ef" class="script-link" data-script="Venuz Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NS Hub">
+    <div class="script-name">NS Hub</div>
+    <a href="https://mineurl.com/4b3037" class="script-link" data-script="NS Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+<div class="game-category" data-game="Titan Fishing">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-0bbbd8d8e7cf9f7723a241f57d6738c0/512/512/Image/Webp/noFilter"
+             alt="Titan Fishing"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Titan Fishing</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Khfresh Hub">
+    <div class="script-name">Khfresh Hub</div>
+    <a href="https://mineurl.com/8f8ebc" class="script-link" data-script="Khfresh Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Nova Categoria -->
+<div class="game-category" data-game="Flee the Facility">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-db413c83bd7d69433f9ae67f771e947e/150/150/Image/Webp/noFilter"
+             alt="Flee the Facility"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Flee the Facility</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="UNX Hub">
+    <div class="script-name">UNX Hub</div>
+    <a href="https://mineurl.com/c1f9ef" class="script-link" data-script="UNX Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="CyberCordes Hub">
+    <div class="script-name">CyberCordes Hub</div>
+    <a href="https://mineurl.com/b0c2c7" class="script-link" data-script="CyberCordes Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Aether Hub">
+    <div class="script-name">Aether Hub</div>
+    <a href="https://mineurl.com/368776" class="script-link" data-script="Aether Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+    </div>
+</div>
+<div class="game-category" data-game="Anime Tactical Simulator">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-b4546fe0417839f44a2ff7976471b4b2/150/150/Image/Webp/noFilter"
+             alt="Anime Tactical Simulator"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Anime Tactical Simulator</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Aeonic Hub">
+    <div class="script-name">Aeonic Hub</div>
+    <a href="https://mineurl.com/e818eb" class="script-link" data-script="Aeonic Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Apel Hub">
+    <div class="script-name">Apel Hub</div>
+    <a href="https://mineurl.com/13204c" class="script-link" data-script="Apel Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Hina Hub">
+    <div class="script-name">Hina Hub</div>
+    <a href="https://mineurl.com/753c73" class="script-link" data-script="Hina Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Yuto Hub">
+    <div class="script-name">Yuto Hub</div>
+    <a href="https://mineurl.com/db7383" class="script-link" data-script="Yuto Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NS Hub">
+    <div class="script-name">NS Hub</div>
+    <a href="https://mineurl.com/7dfb3f" class="script-link" data-script="NS Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Bizarre Lineage -->
+<div class="game-category" data-game="Bizarre Lineage">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-9f127cd188aabcd29d3213b7167aeaca/150/150/Image/Webp/noFilter"
+             alt="Bizarre Lineage"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Bizarre Lineage</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Bite Hub">
+    <div class="script-name">Bite Hub</div>
+    <a href="https://mineurl.com/b312e1" class="script-link" data-script="Bite Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Aether Hub">
+    <div class="script-name">Aether Hub</div>
+    <a href="https://mineurl.com/161fa7" class="script-link" data-script="Aether Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Nameless Hub">
+    <div class="script-name">Nameless Hub</div>
+    <a href="https://mineurl.com/f6e99b" class="script-link" data-script="Nameless Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Neptune Hub">
+    <div class="script-name">Neptune Hub</div>
+    <a href="https://mineurl.com/d65019" class="script-link" data-script="Neptune Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Solix Hub">
+    <div class="script-name">Solix Hub</div>
+    <a href="https://mineurl.com/b8933c" class="script-link" data-script="Solix Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Aeonic Hub">
+    <div class="script-name">Aeonic Hub</div>
+    <a href="https://mineurl.com/9b7e3b" class="script-link" data-script="Aeonic Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Black Hub">
+    <div class="script-name">Black Hub</div>
+    <a href="https://mineurl.com/ecb39c" class="script-link" data-script="Black Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+    </div>
+</div>
+            <!-- Driving Empire -->
+<div class="game-category" data-game="Driving Empire">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-f0309b6056eadf2ccf9c59e7d841cd8c/150/150/Image/Webp/noFilter"
+             alt="Driving Empire"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Driving Empire</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="IceWare Hub">
+    <div class="script-name">IceWare Hub</div>
+    <a href="https://mineurl.com/8dc878" class="script-link" data-script="IceWare Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Apoc Hub">
+    <div class="script-name">Apoc Hub</div>
+    <a href="https://mineurl.com/a9ff41" class="script-link" data-script="Apoc Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Vex Hub">
+    <div class="script-name">Vex Hub</div>
+    <a href="https://mineurl.com/0a33b4" class="script-link" data-script="Vex Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Blade Ball -->
+<div class="game-category" data-game="Blade Ball">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-a17680a7b5e78264aef1d6bb976f4e69/150/150/Image/Webp/noFilter"
+             alt="Blade Ball"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Blade Ball</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="SP Hub">
+    <div class="script-name">SP Hub</div>
+    <a href="https://mineurl.com/4f9ee1" class="script-link" data-script="SP Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Auto Parry Hub">
+    <div class="script-name">Auto Parry Hub</div>
+    <a href="https://mineurl.com/df48b9" class="script-link" data-script="Auto Parry Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Arceney Hub">
+    <div class="script-name">Arceney Hub</div>
+    <a href="https://mineurl.com/1d30e3" class="script-link" data-script="Arceney Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Garden Horizons -->
+<div class="game-category" data-game="Garden Horizons">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-9b5a178fa6291b79ac2d8a91f7f80140/150/150/Image/Webp/noFilter"
+             alt="Garden Horizons"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Garden Horizons</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Chicken Hub">
+    <div class="script-name">Chicken Hub</div>
+    <a href="https://mineurl.com/a33d24" class="script-link" data-script="Chicken Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Cyraa Hub">
+    <div class="script-name">Cyraa Hub</div>
+    <a href="https://mineurl.com/81ff01" class="script-link" data-script="Cyraa Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Zenith Hub">
+    <div class="script-name">Zenith Hub</div>
+    <a href="https://mineurl.com/04691c" class="script-link" data-script="Zenith Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Blue Lock Rivals -->
+<div class="game-category" data-game="Blue Lock Rivals">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-5692d73c0b5d3a1875388468a0088a05/150/150/Image/Webp/noFilter"
+             alt="Blue Lock Rivals"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Blue Lock Rivals</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="The Darkones Hub">
+    <div class="script-name">The Darkones Hub</div>
+    <a href="https://mineurl.com/abc277" class="script-link" data-script="The Darkones Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Nicuse Hub">
+    <div class="script-name">Nicuse Hub</div>
+    <a href="https://mineurl.com/80eb2b" class="script-link" data-script="Nicuse Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Sterling Hub">
+    <div class="script-name">Sterling Hub</div>
+    <a href="https://mineurl.com/770120" class="script-link" data-script="Sterling Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Survive LAVA for Brainrots -->
+<div class="game-category" data-game="Survive LAVA for Brainrots">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-dc4b3573605ba88ec1dbfbe3b4ad39a0/150/150/Image/Webp/noFilter"
+             alt="Survive LAVA for Brainrots"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Survive LAVA for Brainrots</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="NGA Hub">
+    <div class="script-name">NGA Hub</div>
+    <a href="https://mineurl.com/3f6ec7" class="script-link" data-script="NGA Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Xenware Hub">
+    <div class="script-name">Xenware Hub</div>
+    <a href="https://mineurl.com/65b63b" class="script-link" data-script="Xenware Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Tora Hub">
+    <div class="script-name">Tora Hub</div>
+    <a href="https://mineurl.com/83d766" class="script-link" data-script="Tora Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Violence District -->
+<div class="game-category" data-game="Violence District">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-ebde23d7fd4a7b83ba3bf6a3df91d131/150/150/Image/Webp/noFilter"
+             alt="Violence District"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Violence District</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="ANCH Hub">
+    <div class="script-name">ANCH Hub</div>
+    <a href="https://mineurl.com/7744e6" class="script-link" data-script="ANCH Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Open Hub">
+    <div class="script-name">Open Hub</div>
+    <a href="https://mineurl.com/bb1384" class="script-link" data-script="Open Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+        <div class="script-card" data-search="Azure Hub">
+    <div class="script-name">Azure Hub</div>
+    <a href="https://mineurl.com/14835d" class="script-link" data-script="Azure Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Jujutsu Infinite -->
+<div class="game-category" data-game="Jujutsu Infinite">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-c72c9480ba4546c2f73bfb7c816b6da4/150/150/Image/Webp/noFilter"
+             alt="Jujutsu Infinite"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Jujutsu Infinite</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Solix Hub">
+    <div class="script-name">Solix Hub</div>
+    <a href="https://mineurl.com/b5eeac" class="script-link" data-script="Solix Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NS Hub">
+    <div class="script-name">NS Hub</div>
+    <a href="https://mineurl.com/21b5b9" class="script-link" data-script="NS Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Limitless Hub">
+    <div class="script-name">Limitless Hub</div>
+    <a href="https://mineurl.com/f94c09" class="script-link" data-script="Limitless Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Dracula Hub">
+    <div class="script-name">Dracula Hub</div>
+    <a href="https://mineurl.com/dcf41a" class="script-link" data-script="Dracula Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Murder Mystery 2 -->
+<div class="game-category" data-game="Murder Mystery 2">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-7fc1713c02b50d12c51b78b59f2a4b15/150/150/Image/Webp/noFilter"
+             alt="Murder Mystery 2"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Murder Mystery 2</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Me Hub">
+    <div class="script-name">Me Hub</div>
+    <a href="https://mineurl.com/bcb67d" class="script-link" data-script="Me Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Trav Hub">
+    <div class="script-name">Trav Hub</div>
+    <a href="https://mineurl.com/49580d" class="script-link" data-script="Trav Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Horizon Hub">
+    <div class="script-name">Horizon Hub</div>
+    <a href="https://mineurl.com/36bd6b" class="script-link" data-script="Horizon Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Fisch -->
+<div class="game-category" data-game="Fisch">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-368716004d61fd4716e1f732e9797963/150/150/Image/Webp/noFilter"
+             alt="Fisch"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Fisch</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Eclipse Hub">
+    <div class="script-name">Eclipse Hub</div>
+    <a href="https://mineurl.com/135138" class="script-link" data-script="Eclipse Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Black Hub">
+    <div class="script-name">Black Hub</div>
+    <a href="https://mineurl.com/f0608b" class="script-link" data-script="Black Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Zenith Hub">
+    <div class="script-name">Zenith Hub</div>
+    <a href="https://mineurl.com/3355d4" class="script-link" data-script="Zenith Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Than Hub">
+    <div class="script-name">Than Hub</div>
+    <a href="https://mineurl.com/a9df21" class="script-link" data-script="Than Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Sailor Piece -->
+<div class="game-category" data-game="Sailor Piece">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-42a47258877fa5971d239ab36b79ea3d/150/150/Image/Webp/noFilter"
+             alt="Sailor Piece"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Sailor Piece</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <div class="script-card" data-search="Zypheron Hub">
+    <div class="script-name">Zypheron Hub</div>
+    <a href="https://mineurl.com/656874" class="script-link" data-script="Zypheron Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Lume Hub">
+    <div class="script-name">Lume Hub</div>
+    <a href="https://mineurl.com/c01274" class="script-link" data-script="Lume Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Imp Hub">
+    <div class="script-name">Imp Hub</div>
+    <a href="https://mineurl.com/1d2cf1" class="script-link" data-script="Imp Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NS Hub">
+    <div class="script-name">NS Hub</div>
+    <a href="https://mineurl.com/c9a220" class="script-link" data-script="NS Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Dandy s World -->
+<div class="game-category" data-game="Dandy s World">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-8aa9b5d970387fddcddf59db718d18d7/150/150/Image/Webp/noFilter"
+             alt="Dandy s World"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Dandy s World</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Hex Hub">
+    <div class="script-name">Hex Hub</div>
+    <a href="https://mineurl.com/06f840" class="script-link" data-script="Hex Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+        <div class="script-card" data-search="Dilleron Hub">
+    <div class="script-name">Dilleron Hub</div>
+    <a href="https://mineurl.com/9d8809" class="script-link" data-script="Dilleron Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Riddance Hub">
+    <div class="script-name">Riddance Hub</div>
+    <a href="https://mineurl.com/adbded" class="script-link" data-script="Riddance Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+    </div>
+</div>
+            <!-- KAIZEN -->
+<div class="game-category" data-game="KAIZEN">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-8ff73178bc1b729e119d4dc1c63326ac/150/150/Image/Webp/noFilter"
+             alt="KAIZEN"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">KAIZEN</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Nameless Hub">
+    <div class="script-name">Nameless Hub</div>
+    <a href="https://mineurl.com/c7a9ff" class="script-link" data-script="Nameless Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="DZ Hub">
+    <div class="script-name">DZ Hub</div>
+    <a href="https://mineurl.com/5fb804" class="script-link" data-script="DZ Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Xes Hub">
+    <div class="script-name">Xes Hub</div>
+    <a href="https://mineurl.com/e12023" class="script-link" data-script="Xes Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Cerberus Hub">
+    <div class="script-name">Cerberus Hub</div>
+    <a href="https://mineurl.com/92688f" class="script-link" data-script="Cerberus Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Kaizen Dupe Hub">
+    <div class="script-name">Kaizen Dupe Hub</div>
+    <a href="https://mineurl.com/00fe55" class="script-link" data-script="Kaizen Dupe Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Bite Hub">
+    <div class="script-name">Bite Hub</div>
+    <a href="https://shortmine.com/f92ad4" class="script-link" data-script="Bite Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Titan Hub">
+    <div class="script-name">Titan Hub</div>
+    <a href="https://suaads.com/8257da" class="script-link" data-script="Titan Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Maki Hub">
+    <div class="script-name">Maki Hub</div>
+    <a href="https://mineurl.com/718fa9" class="script-link" data-script="Maki Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Omg Hub">
+    <div class="script-name">Omg Hub</div>
+    <a href="https://mineurl.com/e18305" class="script-link" data-script="Omg Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NS Hub">
+    <div class="script-name">NS Hub</div>
+    <a href="https://mineurl.com/cd3fc1" class="script-link" data-script="NS Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Attack on Titan Revolution -->
+<div class="game-category" data-game="Attack on Titan Revolution">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-f87e2d205bce9d315a48cdd1a9128fd5/150/150/Image/Webp/noFilter"
+             alt="Attack on Titan Revolution"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Attack on Titan Revolution</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Tekkit Hub">
+    <div class="script-name">Tekkit Hub</div>
+    <a href="https://mineurl.com/4ea6cb" class="script-link" data-script="Tekkit Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Napoleon Hub">
+    <div class="script-name">Napoleon Hub</div>
+    <a href="https://mineurl.com/f80114" class="script-link" data-script="Napoleon Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="LunarZ Hub">
+    <div class="script-name">LunarZ Hub</div>
+    <a href="https://mineurl.com/1f07b0" class="script-link" data-script="LunarZ Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- The Strongest Battlegrounds
+ -->
+<div class="game-category" data-game="The Strongest Battlegrounds
+">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-85755b822cee060522bc974f98924350/150/150/Image/Webp/noFilter"
+             alt="The Strongest Battlegrounds
+"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">The Strongest Battlegrounds
+</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="TSB Hub">
+    <div class="script-name">TSB Hub</div>
+    <a href="https://mineurl.com/4cfe13" class="script-link" data-script="TSB Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Express Hub">
+    <div class="script-name">Express Hub</div>
+    <a href="https://mineurl.com/2c1e5c" class="script-link" data-script="Express Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Speed X Hub">
+    <div class="script-name">Speed X Hub</div>
+    <a href="https://mineurl.com/03f59c" class="script-link" data-script="Speed X Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Anime Eternal -->
+<div class="game-category" data-game="Anime Eternal">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-222972fa67d957054ff194eac3cbf4c5/150/150/Image/Webp/noFilter"
+             alt="Anime Eternal"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Anime Eternal</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Four Hub">
+    <div class="script-name">Four Hub</div>
+    <a href="https://mineurl.com/b76a16" class="script-link" data-script="Four Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="DP Hub">
+    <div class="script-name">DP Hub</div>
+    <a href="https://mineurl.com/1eef5e" class="script-link" data-script="DP Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NS Hub">
+    <div class="script-name">NS Hub</div>
+    <a href="https://mineurl.com/0064f6" class="script-link" data-script="NS Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Knockout!  -->
+<div class="game-category" data-game="Knockout! ">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-6bfba36cfe219382ed62b20cf8b3c97f/150/150/Image/Webp/noFilter"
+             alt="Knockout! "
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Knockout! </h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Zenk Hub">
+    <div class="script-name">Zenk Hub</div>
+    <a href="https://api.luarmor.net/files/v4/loaders/07d5a780a235a759854475853c1ced8f.lua" class="script-link" data-script="Zenk Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Rest Hub">
+    <div class="script-name">Rest Hub</div>
+    <a href="https://mineurl.com/21343b" class="script-link" data-script="Rest Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Infinity Hub">
+    <div class="script-name">Infinity Hub</div>
+    <a href="https://mineurl.com/1a8bd9" class="script-link" data-script="Infinity Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="R4mpage Hub">
+    <div class="script-name">R4mpage Hub</div>
+    <a href="https://mineurl.com/838419" class="script-link" data-script="R4mpage Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="JN HH Hub">
+    <div class="script-name">JN HH Hub</div>
+    <a href="https://mineurl.com/17326b" class="script-link" data-script="JN HH Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- [DUELS] Murderers VS Sheriffs -->
+<div class="game-category" data-game="[DUELS] Murderers VS Sheriffs">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-ea9c5941da4ed375bccdc40c542d40fd/150/150/Image/Webp/noFilter"
+             alt="[DUELS] Murderers VS Sheriffs"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">[DUELS] Murderers VS Sheriffs</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="FastDex Hub">
+    <div class="script-name">FastDex Hub</div>
+    <a href="https://mineurl.com/7c3959" class="script-link" data-script="FastDex Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Dan Hub">
+    <div class="script-name">Dan Hub</div>
+    <a href="https://mineurl.com/f01bdd" class="script-link" data-script="Dan Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Ekuve Hub">
+    <div class="script-name">Ekuve Hub</div>
+    <a href="https://mineurl.com/ddd845" class="script-link" data-script="Ekuve Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+
+            <!-- Westbound -->
+<div class="game-category" data-game="Westbound">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-b9f1233e7fedefb584c0e6d2bbc11d94/150/150/Image/Webp/noFilter"
+             alt="Westbound"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Westbound</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Atlas Hub">
+    <div class="script-name">Atlas Hub</div>
+    <a href="https://mineurl.com/fe5dcf" class="script-link" data-script="Atlas Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Alpha Hub">
+    <div class="script-name">Alpha Hub</div>
+    <a href="https://mineurl.com/ad64cd" class="script-link" data-script="Alpha Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="V3neno Hub">
+    <div class="script-name">V3neno Hub</div>
+    <a href="https://mineurl.com/a2fab6" class="script-link" data-script="V3neno Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Jujutsu: Zero -->
+<div class="game-category" data-game="Jujutsu: Zero">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-4ea94ad50f11f66463c40885dabbb495/150/150/Image/Webp/noFilter"
+             alt="Jujutsu: Zero"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Jujutsu: Zero</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Aeonic Hub">
+    <div class="script-name">Aeonic Hub</div>
+    <a href="https://mineurl.com/001560" class="script-link" data-script="Aeonic Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Legend Hub">
+    <div class="script-name">Legend Hub</div>
+    <a href="https://mineurl.com/98f6fe" class="script-link" data-script="Legend Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Simca Hub">
+    <div class="script-name">Simca Hub</div>
+    <a href="https://mineurl.com/e1ad09" class="script-link" data-script="Simca Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Areas Hub">
+    <div class="script-name">Areas Hub</div>
+    <a href="https://mineurl.com/014879" class="script-link" data-script="Areas Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+<div class="game-category" data-game="Abyss [BETA]
+">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-c5753cc975fb188a120dea8c9e9df82c/150/150/Image/Webp/noFilter"
+             alt="Abyss [BETA]
+"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Abyss [BETA]
+</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Imp Hub">
+    <div class="script-name">Imp Hub</div>
+    <a href="https://mineurl.com/237815" class="script-link" data-script="Imp Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Aeonic Hub">
+    <div class="script-name">Aeonic Hub</div>
+    <a href="https://mineurl.com/16321f" class="script-link" data-script="Aeonic Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+        <div class="script-card" data-search="Rest Hub">
+    <div class="script-name">Rest Hub</div>
+    <a href="https://mineurl.com/259395" class="script-link" data-script="Rest Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Steal a Brainrot -->
+<div class="game-category" data-game="Steal a Brainrot">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-a7e8f9e9d22cb5f138fec8b1d479dd1e/150/150/Image/Webp/noFilter"
+             alt="Steal a Brainrot"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Steal a Brainrot</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+<div class="script-card" data-search="Kurd Hub">
+    <div class="script-name">Kurd Hub</div>
+    <a href="https://mineurl.com/0fb9a9" class="script-link" data-script="Kurd Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+            <!-- Brainrot Evolution -->
+            
+<div class="game-category" data-game="Brainrot Evolution">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-28bc52b60ade500bc56b8ee019284250/150/150/Image/Webp/noFilter"
+             alt="Brainrot Evolution"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Brainrot Evolution</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Tora Hub">
+    <div class="script-name">Tora Hub</div>
+    <a href="https://mineurl.com/c3226a" class="script-link" data-script="Tora Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Banana Hub">
+    <div class="script-name">Banana Hub</div>
+    <a href="https://mineurl.com/9ac67e" class="script-link" data-script="Banana Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+<div class="script-card" data-search="Pulse Hub">
+    <div class="script-name">Pulse Hub</div>
+    <a href="https://mineurl.com/272548" class="script-link" data-script="Pulse Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            <!-- Scary Shawarma Kiosk -->
+<div class="game-category" data-game="Scary Shawarma Kiosk">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-e846d1005fadb69ef888564275676f29/512/512/Image/Png/noFilter"
+             alt="Scary Shawarma Kiosk"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Scary Shawarma Kiosk</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        
+        
+        <div class="script-card" data-search="Zlex Hub">
+    <div class="script-name">Zlex Hub</div>
+    <a href="https://mineurl.com/f74ccb" class="script-link" data-script="Zlex Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+        <div class="script-card" data-search="eF Hub">
+    <div class="script-name">eF Hub</div>
+    <a href="https://mineurl.com/ada75f" class="script-link" data-script="eF Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Hendar Hub">
+    <div class="script-name">Hendar Hub</div>
+    <a href="https://mineurl.com/01465c" class="script-link" data-script="Hendar Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+        
+    </div>
+</div>
+            <!-- The Forge [BETA] -->
+<div class="game-category" data-game="The Forge [BETA]">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-730a9d0dc75aa7524b01a3ea35a228aa/150/150/Image/Webp/noFilter"
+             alt="The Forge [BETA]"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">The Forge [BETA]</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        
+        <div class="script-card" data-search="Catraz Hub">
+    <div class="script-name">Catraz Hub</div>
+    <a href="https://mineurl.com/thefo" class="script-link" data-script="Catraz Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+        <div class="script-card" data-search="Ather Hub">
+    <div class="script-name">Ather Hub</div>
+    <a href="https://mineurl.com/4401d0" class="script-link" data-script="Ather Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+        <div class="script-card" data-search="Polsec Hub">
+    <div class="script-name">Polsec Hub</div>
+    <a href="https://mineurl.com/0cac51" class="script-link" data-script="Polsec Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        
+    </div>
+</div>
+
+            <!-- Volleyball Legends -->
+<div class="game-category" data-game="Volleyball Legends">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-6cc20c6a9b4e2fb60e1724e2846f1d2d/150/150/Image/Webp/noFilter"
+             alt="Volleyball Legends"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Volleyball Legends</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="DP Hub">
+    <div class="script-name">DP Hub</div>
+    <a href="https://mineurl.com/b494b1" class="script-link" data-script="DP Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Napoleon Hub">
+    <div class="script-name">Napoleon Hub</div>
+    <a href="https://mineurl.com/fa11bc" class="script-link" data-script="Napoleon Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Rinns Hub">
+    <div class="script-name">Rinns Hub</div>
+    <a href="https://mineurl.com/f48786" class="script-link" data-script="Rinns Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Ather Hub">
+    <div class="script-name">Ather Hub</div>
+    <a href="https://mineurl.com/04bc7e" class="script-link" data-script="Ather Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="The Darkone Hub">
+    <div class="script-name">The Darkone Hub</div>
+    <a href="https://mineurl.com/f47437" class="script-link" data-script="The Darkone Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+            
+            <!-- Grand Piece Online -->
+<div class="game-category" data-game="Grand Piece Online">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-ffb49c47de6b6cc808c90094235e4235/150/150/Image/Webp/noFilter"
+             alt="Grand Piece Online"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Grand Piece Online</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Wizard Hub">
+    <div class="script-name">Wizard Hub</div>
+    <a href="https://mineurl.com/ecbd26" class="script-link" data-script="Wizard Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Switch Hub">
+    <div class="script-name">Switch Hub</div>
+    <a href="https://mineurl.com/d66223" class="script-link" data-script="Switch Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Kaizen Hub">
+    <div class="script-name">Kaizen Hub</div>
+    <a href="https://mineurl.com/e7969b" class="script-link" data-script="Kaizen Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="GPO Hub">
+    <div class="script-name">GPO Hub</div>
+    <a href="https://mineurl.com/e0ed08" class="script-link" data-script="GPO Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Mandy Hub">
+    <div class="script-name">Mandy Hub</div>
+    <a href="https://mineurl.com/e7812e" class="script-link" data-script="Mandy Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Lunar Hub">
+    <div class="script-name">Lunar Hub</div>
+    <a href="https://mineurl.com/49c89d" class="script-link" data-script="Lunar Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+    </div>
+</div>
+<!-- Escape Tsunami -->
+
+<div class="game-category" data-game="Escape Tsunami For Brainrots!">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-98d4f93bcd4c199586a27148999ad4cf/150/150/Image/Webp/noFilter"
+             alt="Escape Tsunami For Brainrots!"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Escape Tsunami For Brainrots!</h2>
+    </div>
+
+        <!-- Adicione os scripts aqui -->
+        <div class="scripts-grid">
+        <div class="script-card" data-search="Tora Hub">
+    <div class="script-name">Tora Hub</div>
+    <a href="https://mineurl.com/2d1177" class="script-link" data-script="Tora Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Mamaboy Hub">
+    <div class="script-name">Mamaboy Hub</div>
+    <a href="https://mineurl.com/0d6c1e" class="script-link" data-script="Mamaboy Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Cyrus Hub">
+    <div class="script-name">Cyrus Hub</div>
+    <a href="https://mineurl.com/76ef63" class="script-link" data-script="Cyrus Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Overdrive Hub">
+    <div class="script-name">Overdrive Hub</div>
+    <a href="https://mineurl.com/08737d" class="script-link" data-script="Overdrive Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Ajjans Hub">
+    <div class="script-name">Ajjans Hub</div>
+    <a href="https://mineurl.com/43d76e" class="script-link" data-script="Ajjans Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Ather Hub">
+    <div class="script-name">Ather Hub</div>
+    <a href="https://mineurl.com/ccc84e" class="script-link" data-script="Ather Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Alchemy Hub">
+    <div class="script-name">Alchemy Hub</div>
+    <a href="https://mineurl.com/702a5b" class="script-link" data-script="Alchemy Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Lucky Hub">
+    <div class="script-name">Lucky Hub</div>
+    <a href="https://mineurl.com/26992b" class="script-link" data-script="Lucky Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Ekuve Hub">
+    <div class="script-name">Ekuve Hub</div>
+    <a href="https://mineurl.com/8c0891" class="script-link" data-script="Ekuve Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Fares Hub">
+    <div class="script-name">Fares Hub</div>
+    <a href="https://mineurl.com/fares" class="script-link" data-script="Fares Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Lumin Hub">
+    <div class="script-name">Lumin Hub</div>
+    <a href="https://mineurl.com/87eeea" class="script-link" data-script="Lumin Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Speed X Hub">
+    <div class="script-name">Speed X Hub</div>
+    <a href="https://mineurl.com/775f46" class="script-link" data-script="Speed X Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Blessed X Hub">
+    <div class="script-name">Blessed X Hub</div>
+    <a href="https://mineurl.com/brainrotsss" class="script-link" data-script="Blessed X Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+<div class="script-card" data-search="Rat X Hub">
+    <div class="script-name">Rat X Hub</div>
+    <a href="https://mineurl.com/720dc2" class="script-link" data-script="Rat X Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+<div class="script-card" data-search="Solix Hub">
+    <div class="script-name">Solix Hub</div>
+    <a href="https://mineurl.com/68ea96" class="script-link" data-script="Solix Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+    </div>
+</div>
+
+
+
+            
+<div class="game-category" data-game="Blox Fruits">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-610963206f287c1164c8fcad47efb331/150/150/Image/Webp/noFilter"
+             alt="Blox Fruits"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Blox Fruits</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="NTT Hub">
+    <div class="script-name">NTT Hub</div>
+    <a href="https://github.com/search-scripts/CodeSourcers/blob/main/2026/Blox%20Fruits%20SCRIPT%20%7C%20NTT%20Hub.lua" class="script-link" data-script="NTT Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Night Hub">
+    <div class="script-name">Night Hub</div>
+    <a href="https://mineurl.com/967a49" class="script-link" data-script="Night Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="HOHO Hub">
+    <div class="script-name">HOHO Hub</div>
+    <a href="https://mineurl.com/7347c6" class="script-link" data-script="HOHO Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Teddy Hub">
+    <div class="script-name">Teddy Hub</div>
+    <a href="https://mineurl.com/752f01" class="script-link" data-script="Teddy Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Longhihi Hub">
+    <div class="script-name">Longhihi Hub</div>
+    <a href="https://mineurl.com/fd988b" class="script-link" data-script="Longhihi Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Gravity Hub">
+    <div class="script-name">Gravity Hub</div>
+    <a href="https://mineurl.com/bdf199" class="script-link" data-script="Gravity Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Xeter Hub">
+    <div class="script-name">Xeter Hub</div>
+    <a href="https://mineurl.com/0daf88" class="script-link" data-script="Xeter Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Vxeze Hub">
+    <div class="script-name">Vxeze Hub</div>
+    <a href="https://mineurl.com/18f3a6" class="script-link" data-script="Vxeze Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+
+
+
+
+
+    </div>
+</div>
+
+        <!-- Brookhaven RP -->
+<div class="game-category" data-game="Brookhaven RP">
+    <div class="category-header">
+        <img src="https://tr.rbxcdn.com/180DAY-bcfd839bc82c88533cc29bf2989537f9/150/150/Image/Webp/noFilter"
+             alt="Brookhaven RP"
+             class="game-icon"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 fill=%22%231f1f1f%22/%3E%3C/svg%3E'">
+
+        <h2 class="category-title">Brookhaven RP</h2>
+    </div>
+
+    <div class="scripts-grid">
+        <!-- Adicione os scripts aqui -->
+        <div class="script-card" data-search="Sander XY Hub">
+    <div class="script-name">Sander XY Hub</div>
+    <a href="https://mineurl.com/1468ed" class="script-link" data-script="Sander XY Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="SP Hub">
+    <div class="script-name">SP Hub</div>
+    <a href="https://mineurl.com/3155b6" class="script-link" data-script="SP Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Hexagon Hub">
+    <div class="script-name">Hexagon Hub</div>
+    <a href="https://mineurl.com/5c9e8e" class="script-link" data-script="Hexagon Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Rael Hub">
+    <div class="script-name">Rael Hub</div>
+    <a href="https://mineurl.com/52d639" class="script-link" data-script="Rael Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+       <div class="script-card" data-search="Cartola Hub">
+    <div class="script-name">Cartola Hub</div>
+    <a href="https://mineurl.com/73864a" class="script-link" data-script="Cartola Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+<div class="script-card" data-search="Coquette Hub">
+    <div class="script-name">Coquette Hub</div>
+    <a href="https://mineurl.com/973e07" class="script-link" data-script="Coquette Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+
+
+
+
+
+
+
+    </div>
+</div>
+    <!-- Jujutsu Shenanigans -->
+    <div class="game-category" data-game="Jujutsu Shenanigans">
+        <div class="category-header">
+            <img src="https://tr.rbxcdn.com/180DAY-1caf54cff5f60cca72f8295bdd9725c3/150/150/Image/Webp/noFilter"
+                 alt="Jujutsu Shenanigans"
+                 class="game-icon">
+            <h2 class="category-title">Jujutsu Shenanigans</h2>
+        </div>
+        <div class="script-card" data-search="Nameless Hub">
+    <div class="script-name">Nameless Hub</div>
+    <a href="https://mineurl.com/bea474" class="script-link" data-script="Nameless Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Flow Hub">
+    <div class="script-name">Flow Hub</div>
+    <a href="https://mineurl.com/58fc83" class="script-link" data-script="Flow Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Alchemy Hub">
+    <div class="script-name">Alchemy Hub</div>
+    <a href="https://mineurl.com/db46de" class="script-link" data-script="Alchemy Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="Aimbot mira Hub">
+    <div class="script-name">Aimbot mira Hub</div>
+    <a href="https://mineurl.com/ee9eb1" class="script-link" data-script="Aimbot mira Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Black Flash Hud">
+    <div class="script-name">Black Flash Hud</div>
+    <a href="https://mineurl.com/4631e6" class="script-link" data-script="Black Flash Hud">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="scripts-grid">
+            <div class="script-card" data-search="Ccgvb Hub">
+    <div class="script-name">Ccgvb Hub</div>
+    <a href="https://mineurl.com/fb555f" class="script-link" data-script="Ccgvb Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+            <div class="script-card" data-search="SpotlightGG Hub">
+    <div class="script-name">SpotlightGG Hub</div>
+    <a href="https://mineurl.com/f5345e" class="script-link" data-script="SpotlightGG Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="TBO Hub">
+    <div class="script-name">TBO Hub</div>
+    <a href="https://mineurl.com/e28349" class="script-link" data-script="TBO Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+            <div class="script-card" data-search="Nexor Hub">
+                <div class="script-name">Nexor Hub</div>
+                <a href="https://mineurl.com/jujutsu" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="Plutonium Hub">
+                <div class="script-name">Plutonium Hub</div>
+                <a href="https://mineurl.com/869ee5" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="NS Hub">
+                <div class="script-name">NS Hub</div>
+                <a href="https://mineurl.com/b925f1" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="Beecon Hub">
+                <div class="script-name">Beecon Hub</div>
+                <a href="https://mineurl.com/91b4e2" class="script-link">Get Script</a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- King Legacy -->
+    <div class="game-category" data-game="King Legacy">
+        <div class="category-header">
+            <img src="https://tr.rbxcdn.com/180DAY-66b1b7fd4e25511445d6f7bb207b931d/150/150/Image/Webp/noFilter"
+                 alt="King Legacy"
+                 class="game-icon">
+            <h2 class="category-title">King Legacy</h2>
+        </div>
+        <div class="script-card" data-search="OMG Hub">
+    <div class="script-name">OMG Hub</div>
+    <a href="https://mineurl.com/692c36" class="script-link" data-script="OMG Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="script-card" data-search="NTT Hub">
+    <div class="script-name">NTT Hub</div>
+    <a href="https://mineurl.com/eed9ac" class="script-link" data-script="NTT Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+<div class="script-card" data-search="Spectrum X Hub">
+    <div class="script-name">Spectrum X Hub</div>
+    <a href="https://mineurl.com/3de7c1" class="script-link" data-script="Spectrum X Hub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        </svg>
+        Get Script
+    </a>
+</div>
+        <div class="scripts-grid">
+
+            <div class="script-card" data-search="Tsuo Hub">
+                <div class="script-name">Tsuo Hub</div>
+                <a href="https://mineurl.com/294a82" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="Arc Hub">
+                <div class="script-name">Arc Hub</div>
+                <a href="https://mineurl.com/baf93c" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="Fazium Hub">
+                <div class="script-name">Fazium Hub</div>
+                <a href="https://mineurl.com/5e854d" class="script-link">Get Script</a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Prison Life -->
+    <div class="game-category" data-game="Prison Life">
+        <div class="category-header">
+            <img src="https://tr.rbxcdn.com/180DAY-7a3802473e1293b01a362d351dec3acf/150/150/Image/Webp/noFilter"
+                 alt="Prison Life"
+                 class="game-icon">
+            <h2 class="category-title">Prison Life</h2>
+        </div>
+
+        <div class="scripts-grid">
+
+            <div class="script-card" data-search="Mythixz Hub">
+                <div class="script-name">Mythixz Hub</div>
+                <a href="https://mineurl.com/a6cb02" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="Selenium Hub">
+                <div class="script-name">Selenium Hub</div>
+                <a href="https://mineurl.com/b3e306" class="script-link">Get Script</a>
+            </div>
+
+            <div class="script-card" data-search="Hookduel Hub">
+                <div class="script-name">Hookduel Hub</div>
+                <a href="https://mineurl.com/bf2338" class="script-link">Get Script</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+        <div class="no-results hidden" id="noResults">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <p>No scripts found</p>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Ethus. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // =============================================
+        // DISCORD WEBHOOK CONFIG
+        // =============================================
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1479469938459803853/snEkmHsQ59syF_kLla7DnLBphSfBNgwXqKFrSh1WjPvKVYih6H-0CHPkRq-AJr6xKcA_';
+
+        async function sendDiscordWebhook(gameName, hubName) {
+            const now = new Date();
+            const timestamp = now.toISOString();
+
+            const payload = {
+                username: "Ethus Scripts",
+                avatar_url: "https://yt3.googleusercontent.com/xYhMqiKfC6gq7KwmwB4JtuYNSw_6ZeM2ibsdeFqr5HxnOuK7wY1d_YAcZhsddbxhfq_d6zVUfw=s160-c-k-c0x00ffffff-no-rj",
+                embeds: [
+                    {
+                        title: "🌐 | Análise de Dados",
+                        color: 0x4a9eff,
+                        fields: [
+                            {
+                                name: "🕹️ | Nome do Jogo",
+                                value: gameName || "Desconhecido",
+                                inline: false
+                            },
+                            {
+                                name: "📜 | Nome do Hub",
+                                value: hubName || "Desconhecido",
+                                inline: false
+                            }
+                        ],
+                        footer: {
+                            text: "Ethus Scripts • Tracker",
+                            icon_url: "https://yt3.googleusercontent.com/xYhMqiKfC6gq7KwmwB4JtuYNSw_6ZeM2ibsdeFqr5HxnOuK7wY1d_YAcZhsddbxhfq_d6zVUfw=s160-c-k-c0x00ffffff-no-rj"
+                        },
+                        timestamp: timestamp
+                    }
+                ]
+            };
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.warn('Webhook error:', err);
+            }
+        }
+
+        // =============================================
+        // SEARCH FUNCTIONALITY
+        // =============================================
+        const searchInput = document.getElementById('searchInput');
+        const allCategories = document.querySelectorAll('.game-category');
+        const allCards = document.querySelectorAll('.script-card');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                allCategories.forEach(cat => cat.classList.remove('hidden'));
+                allCards.forEach(card => card.classList.remove('hidden'));
+                noResults.classList.add('hidden');
+                return;
+            }
+
+            let hasResults = false;
+
+            allCategories.forEach(category => {
+                const cards = category.querySelectorAll('.script-card');
+                let categoryHasResults = false;
+
+                cards.forEach(card => {
+                    const searchData = card.getAttribute('data-search').toLowerCase();
+                    const scriptName = card.querySelector('.script-name').textContent.toLowerCase();
+                    const categoryName = category.querySelector('.category-title').textContent.toLowerCase();
+                    
+                    if (searchData.includes(searchTerm) || 
+                        scriptName.includes(searchTerm) || 
+                        categoryName.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                        categoryHasResults = true;
+                        hasResults = true;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                if (categoryHasResults) {
+                    category.classList.remove('hidden');
+                } else {
+                    category.classList.add('hidden');
+                }
+            });
+
+            if (!hasResults) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        });
+
+        // =============================================
+        // LINK HANDLING + WEBHOOK TRIGGER
+        // =============================================
+        document.querySelectorAll('.script-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Find the game name from the parent category
+                const card = this.closest('.script-card');
+                const category = this.closest('.game-category');
+
+                const hubName = card
+                    ? (card.querySelector('.script-name')?.textContent?.trim() || this.getAttribute('data-script') || 'Desconhecido')
+                    : (this.getAttribute('data-script') || 'Desconhecido');
+
+                const gameName = category
+                    ? (category.querySelector('.category-title')?.textContent?.trim() || 'Desconhecido')
+                    : 'Desconhecido';
+
+                // Fire webhook (non-blocking)
+                sendDiscordWebhook(gameName, hubName);
+
+                // Handle placeholder links
+                const href = this.getAttribute('href');
+                if (href === '#') {
+                    e.preventDefault();
+                    alert(`Link não configurado para: ${hubName}\n\nEdite o HTML e substitua href="#" pelo link real.`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
